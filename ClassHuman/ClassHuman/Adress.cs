@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassHuman
 {
-    class Adress
+    public class Adress
     {
         private string _country;
         private string _city;
@@ -39,14 +39,45 @@ namespace ClassHuman
         }
         public Adress inputadress()
         {
-            Console.WriteLine("Country: ");
-            string country = Console.ReadLine();
-            Console.WriteLine("City: ");
-            string city = Console.ReadLine();
-            Console.WriteLine("Street: ");
-            string street = Console.ReadLine();
-            Console.WriteLine("House: ");
-            int house = int.Parse(Console.ReadLine());
+            string country;
+            while (true)
+            {
+                Console.WriteLine("Country: ");
+                country = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(country)) break;
+                else Console.WriteLine("Вы не ввели страну!");
+            }
+            string city;
+            while (true)
+            {
+                Console.WriteLine("City: ");
+                city = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(city)) break;
+                else Console.WriteLine("Вы не ввели город!");
+            }
+            string street;
+            while (true)
+            {
+                Console.WriteLine("Street: ");
+                street = Console.ReadLine();
+                if (!string.IsNullOrWhiteSpace(street)) break;
+                else Console.WriteLine("Вы не ввели улицу!");
+            }
+            int house;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("House: ");
+                    house = int.Parse(Console.ReadLine());
+                    if (house > 0) break;
+                    else Console.WriteLine("Номер дома не может быть отридцательным!");
+                }
+                catch
+                {
+                    Console.WriteLine("Вы не ввели номер лома!");
+                }
+            }
             Adress adress = new Adress(country, city, street, house);
             return adress;
         }

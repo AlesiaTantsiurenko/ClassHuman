@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassHuman
 {
-    class listTeacher
+   public  class listTeacher
     {
         private List<Teacher> list;
         public listTeacher()

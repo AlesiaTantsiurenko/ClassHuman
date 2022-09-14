@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ClassHuman
 {
-    enum Nation { Ukranian, French, Polish };
-    class Human
+    public enum Nation { Ukranian, French, Polish };
+    public class Human
     {
         protected string _name;
         protected string _surname;
@@ -15,6 +15,7 @@ namespace ClassHuman
         protected double _height;
         protected double _weight;
         protected bool _habbits;
+        protected string _email;
         protected Nation _nation;
         protected Adress _adress;
 
@@ -27,10 +28,11 @@ namespace ClassHuman
             this._height = 1.84;
             this._weight = 60;
             this._habbits = false;
+            this._email = "alesiatantsiurenko@gmail.com";
             this._nation = Nation.Ukranian;
             this._adress = new Adress();
         }
-        public Human(string name, string surname, int age, double height, double weight, bool habbits, Nation nation, Adress adress)
+        public Human(string name, string surname, int age, double height, double weight, bool habbits, string email, Nation nation, Adress adress)
         {
             this._name = name;
             this._surname = surname;
@@ -38,6 +40,7 @@ namespace ClassHuman
             this._height = height;
             this._weight = weight;
             this._habbits = habbits;
+            this._email = email;
             this._nation = nation;
             this._adress = adress;
         }
@@ -67,6 +70,7 @@ namespace ClassHuman
                 "Height: " + this._height.ToString() + "\n" +
                 "Weight: " + this._weight.ToString() + "\n" +
                 "Is Habbits: " + this._habbits.ToString() + "\n" +
+                "Email: " + this._email + "\n" +
                 "Nation: " + this._nation.ToString() + "\n" +
                 "Adress: " + this._adress.toString();
             Console.WriteLine(data);
@@ -80,11 +84,12 @@ namespace ClassHuman
                 "Height: " + this._height.ToString() + "\n" +
                 "Weight: " + this._weight.ToString() + "\n" +
                 "Is Habbits: " + this._habbits.ToString() + "\n" +
+                "Email: " + this._email + "\n" +
                 "Nation: " + this._nation.ToString() + "\n" +
                 "Adress: " + this._adress.toString();
             return str;
         }
-        public static void inputInfo(listHuman list)
+        public virtual  void inputInfo(/*listHuman list*/)
         {
             Console.WriteLine("Name: ");
             string name = Console.ReadLine();
@@ -98,14 +103,17 @@ namespace ClassHuman
             double weight = double.Parse(Console.ReadLine());
             Console.WriteLine("Habbits: ");
             bool habbits = bool.Parse(Console.ReadLine());
+            Console.WriteLine("Email: ");
+            string email = Console.ReadLine();
             Console.WriteLine("Nation: ");
             //Nation nation = (Nation)Enum.Parse(typeof(Nation), Console.ReadLine(), true);
             Nation nation = (Nation)Enum.Parse(typeof(Nation), Console.ReadLine(), true);
             Adress adr = new Adress();
-            Human n = new Human(name, surname, age, height, weight, habbits, nation, adr.inputadress());
-            list.add(n);
+            //Human n = new Human(name, surname, age, height, weight, habbits,email, nation, adr.inputadress());
+            //list.add(n);
         }
-        public string Name
+        
+public string Name
         {
             get { return _name; }
             set { _name = value; }
@@ -140,7 +148,11 @@ namespace ClassHuman
             get { return _habbits; }
             set { _habbits = value; }
         }
-
+        public string Email
+        {
+            get { return _email; }
+            set { _email = value; }
+        }
         public Nation Nation
         {
             get { return _nation; }

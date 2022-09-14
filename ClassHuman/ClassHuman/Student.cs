@@ -6,39 +6,37 @@ using System.Threading.Tasks;
 
 namespace ClassHuman
 {
-    class Student : Human
+    public enum Key { csharp, python, java, JS }
+    public class Student : Human
     {
         private int group;
         private int money;
+        private Key key;
 
         public Student() : base()
         {
 
         }
         public Student(string name, string surname, int age, double height,
-            double weight, bool habbits, Nation nation, Adress adress, int group, int money) : base(name, surname,
-                age, height, weight, habbits, nation, adress)
+            double weight, bool habbits, string email, Nation nation, Adress adress, int group, int money, Key key) : base(name, surname,
+                age, height, weight, habbits, email, nation, adress)
         {
             this.group = group;
             this.money = money;
+            this.key= key;
         }
         public override void printInfo()
         {
             string data =
-               "Name: " + this._name + "\n" +
-               "Surname: " + this._surname + "\n" +
-               "Age: " + this._age.ToString() + "\n" +
-               "Height: " + this._height.ToString() + "\n" +
-               "Weight: " + this._weight.ToString() + "\n" +
-               "Is Habbits: " + this._habbits.ToString() + "\n" +
-               "Nation: " + this._nation.ToString() + "\n" +
-               "Adress: " + this._adress.toString() + "\n" +
+               base.toStr() + "\n" +
                "Group: " + this.group.ToString() + "\n" +
-               "Money: " + this.money.ToString();
+               "Money: " + this.money.ToString() + "\n" +
+                "Key: " + this.key.ToString();
             Console.WriteLine(data);
 
         }
 
+       
         public int Group
         {
             get { return group; }
@@ -48,6 +46,12 @@ namespace ClassHuman
         {
             get { return money; }
             set { money = value; }
+        }
+        public Key Key
+        {
+            get { return key; }
+            set { key = value; }
+
         }
     }
 }

@@ -12,31 +12,30 @@ namespace ClassHuman
         {
             List<Human> listHuman = new List<Human>();
             Adress add1 = new Adress("Ukraine", "Kherson", "Perekopskaya", 3);
-            Human one = new Human("Alesia", "Tantsiurenko", 20, 1.84, 60, false, Nation.Ukranian, add1);
-            Human two = new Human("Alex", "Anderson", 18, 1.84, 100, true, Nation.Polish, new Adress("Polish", "Jahj", "Thgg", 5));
+            //Human one = new Human("Alesia", "Tantsiurenko", 20, 1.84, 60, false, Nation.Ukranian, add1);
+            //Human two = new Human("Alex", "Anderson", 18, 1.84, 100, true, Nation.Polish, new Adress("Polish", "Jahj", "Thgg", 5));
             //Human zero = new Human();
             //zero.printInfo();
             listHuman list = new listHuman();
-            list.add(one);
-            list.add(two);
+            //list.add(one);
+            //list.add(two);
 
             listTeacher listTeacher = new listTeacher();
-            Student st_one = new Student("Jane", "Ternova", 20, 1.78, 65, false, Nation.French, new Adress("France", "Paris", "Brovera", 7), 241, 5000);
-            Student st_two = new Student("Olga", "Kring", 18, 1.80, 60, false, Nation.Ukranian, new Adress("France", "Paris", "Troleva", 10), 241, 5000);
-            Student st_three = new Student("Rita", "Ora", 16, 1.75, 55, false, Nation.Ukranian, new Adress("France", "Paris", "Norgaeva", 8), 241, 5000);
-            Teacher one_th = new Teacher("Viktoria", "Lavrova", 30, 1.83, 65, false, Nation.French, new Adress("France", "Paris", "Krasnova", 5), 30000, "FKNFM");
+            Student st_one = new Student("Jane", "Ternova", 20, 1.78, 65, false, "la@gmailcom", Nation.French, new Adress("France", "Paris", "Brovera", 7), 241, 5000, Key.python);
+            Student st_two = new Student("Olga", "Kring", 18, 1.80, 60, false,"k@gmail.com", Nation.Ukranian, new Adress("France", "Paris", "Troleva", 10), 241, 5000, Key.python);
+            Student st_three = new Student("Rita", "Ora", 16, 1.75, 55, false, "g@gmail.com", Nation.Ukranian, new Adress("France", "Paris", "Norgaeva", 8), 241, 5000, Key.python);
+            Teacher one_th = new Teacher("Viktoria", "Lavrova", 30, 1.83, 65, false, "j@gmail.com", Nation.French, new Adress("France", "Paris", "Krasnova", 5), 30000, "FKNFM", 2, KeyWords.python);
             one_th.add(st_one);
-            one_th.add(st_two);
-            one_th.add(st_three);
+            //one_th.add(st_two);
+            //one_th.add(st_three);
             //one_th.show();
-            Teacher two_th = new Teacher("Jack", "Li", 25, 1.83, 80, false, Nation.French, new Adress("France", "Paris", "Grineva", 3), 30000, "FKNFM");
-            listTeacher.add(one_th);
-            listTeacher.add(two_th);
-            
-
+            one_th.inputInfo();
+            one_th.show();
+            //one_th.SerializelistStudent();
+           // one_th.DeserializelistStudent();
             //listTeacher.show();
-            
-            string choice = null;
+
+            /*string choice = null;
             while (choice != "0")
             {
                 Console.WriteLine("Выберите действие ");
@@ -138,7 +137,7 @@ namespace ClassHuman
                         break;
 
                 }
-            }
+            }*/
             Console.ReadLine();
         
     }
