@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClassHuman
 {
+    [Serializable]
     public class Adress
     {
         private string _country;
@@ -29,13 +30,22 @@ namespace ClassHuman
             this._house = house;
         }
 
-        public string toString()
-        {
-            return
+        public string toString() =>
                 "Country: " + this._country + "\n" +
                 "City: " + this._city + "\n" +
                 "Street: " + this._street + "\n" +
                 "House: " + this._house.ToString();
+        public bool IsNotEmpty(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return false;
+            else return true;
+        }
+        public bool IsValidNumber(int number)
+        {
+            if (number > 0) return true;
+            else return false;
+
         }
         public Adress inputadress()
         {
@@ -44,7 +54,7 @@ namespace ClassHuman
             {
                 Console.WriteLine("Country: ");
                 country = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(country)) break;
+                if (IsNotEmpty(country)) break;
                 else Console.WriteLine("Вы не ввели страну!");
             }
             string city;
@@ -52,7 +62,7 @@ namespace ClassHuman
             {
                 Console.WriteLine("City: ");
                 city = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(city)) break;
+                if (IsNotEmpty(city)) break;
                 else Console.WriteLine("Вы не ввели город!");
             }
             string street;
@@ -60,49 +70,46 @@ namespace ClassHuman
             {
                 Console.WriteLine("Street: ");
                 street = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(street)) break;
+                if (IsNotEmpty(street)) break;
                 else Console.WriteLine("Вы не ввели улицу!");
             }
             int house;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("House: ");
-                    house = int.Parse(Console.ReadLine());
-                    if (house > 0) break;
-                    else Console.WriteLine("Номер дома не может быть отридцательным!");
-                }
-                catch
+                    string ho = Console.ReadLine();
+                if (IsNotEmpty(ho) && IsValidNumber(int.Parse(ho)))
                 {
-                    Console.WriteLine("Вы не ввели номер лома!");
+                    house = int.Parse(ho);
+                    break;
                 }
+                else Console.WriteLine("Номер дома не может быть отридцательным или пустым!");
             }
             Adress adress = new Adress(country, city, street, house);
             return adress;
         }
         public string Country
         {
-            get { return _country; }
-            set { _country = value; }
+            get => _country;
+            set => _country = value;
         }
 
         public string City
         {
-            get { return _city; }
-            set { _city = value; }
+            get => _city;
+            set => _city = value;
         }
 
         public string Street
         {
-            get { return _street; }
-            set { _street = value; }
+            get => _street;
+            set => _street = value;
         }
 
         public int House
         {
-            get { return _house; }
-            set { _house = value; }
+            get => _house;
+            set => _house = value;
         }
     }
 }

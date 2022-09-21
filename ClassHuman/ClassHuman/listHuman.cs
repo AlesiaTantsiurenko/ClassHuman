@@ -14,12 +14,12 @@ namespace ClassHuman
         {
             listHumans = new List<Human>();
         }
-        public virtual void add(Human human)
+        public void add(Human human)
         {
             listHumans.Add(human);
         }
 
-        public virtual void show()
+        public void show()
         {
             for (int n = 0; n < listHumans.Count(); n++)
                 listHumans[n].printInfo();

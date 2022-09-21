@@ -6,45 +6,77 @@ using System.Threading.Tasks;
 
 namespace ClassHuman
 {
-    class CourseWork
+    public struct UDC
+    {
+        private int id;
+        private string udc;
+        public UDC(int id, string udc)
+        {
+            this.id = id;
+            this.udc = udc;
+        }
+        public string printInfo()
+        {
+            return "Id: " + this.id.ToString() + "\n" + "Name: " + this.udc;
+        }
+        public int Id
+        {
+            get => id;
+            set => id = value;
+        }
+        public string Udc
+        {
+            get => udc;
+            set => udc = value;
+        }
+    } 
+    public class CourseWork
     {
         private string description;
         private string name;
         private DateTime date;
-        public CourseWork(string description, string name, DateTime date)
+        private UDC udc;
+        public CourseWork(string description, string name, DateTime date, UDC udc)
         {
             this.description = description;
             this.name = name;
             this.date = date;
+            this.udc = udc;
         }
 
         public void printinfo()
         {
             string text = "Description: " + description + "\n" +
-                 "Name: " + name + "\n" +
-                 "Date: " + date;
+                 "Name: " + this.name + "\n" +
+                 "Date: " + this.date + "\n" +
+                 "UDC: " + this.udc;
+
             Console.WriteLine(text);
         }
-        public string strinfo()
-        {
-            return "Description: " + description + "\n" +
+        public string striginfo()=>
+                 "Description: " + description + "\n" +
                  "Name: " + name + "\n" +
-                 "Date: " + date;
-        }
+                 "Date: " + date + "\n" +
+                 "UDC: " + this.udc;
 
         public string Description{
-            get { return description; }
-            set { description = value; }
+            get => description;
+            set => description = value;
         }
         public string Name
         {
-            get { return name; }
-            set { name = value; }
+            get => name;
+            set => name = value;
         }
         public DateTime Date
         {
-            get { return date; }
-            set { date = value; }
+            get => date;
+            set => date = value;
+        }
+        public UDC Udc
+        {
+            get => udc;
+            set => udc = value;
         }
     }
 }

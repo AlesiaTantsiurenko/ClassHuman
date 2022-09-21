@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace ClassHuman
 {
     public enum Nation { Ukranian, French, Polish };
+    [Serializable]
     public class Human
     {
         protected string _name;
@@ -44,23 +45,16 @@ namespace ClassHuman
             this._nation = nation;
             this._adress = adress;
         }
-        public static Human operator +(Human one, Human two)
+        public static Human operator +(Human one, Human two) => new Human
         {
-            Human result = new Human();
-            result._age = one._age + two._age;
-            result._habbits = one._habbits && two._habbits;
-            return result;
-        }
-        public static bool operator >(Human one, Human two)
-        {
-            bool result = one._age > two._age;
-            return result;
-        }
-        public static bool operator <(Human one, Human two)
-        {
-            bool result = one._age < two._age;
-            return result;
-        }
+
+            _age = one._age + two._age,
+            _habbits = one._habbits && two._habbits
+        };
+        public static bool operator >(Human one, Human two) => one._age > two._age;
+
+        public static bool operator <(Human one, Human two) => one._age < two._age;
+        
         public virtual void printInfo()
         {
             string data =
@@ -75,10 +69,8 @@ namespace ClassHuman
                 "Adress: " + this._adress.toString();
             Console.WriteLine(data);
         }
-        public string toStr()
-        {
-            string str;
-            str = "Name: " + this._name + "\n" +
+        public string toStr() =>
+                "Name: " + this._name + "\n" +
                 "Surname: " + this._surname + "\n" +
                 "Age: " + this._age.ToString() + "\n" +
                 "Height: " + this._height.ToString() + "\n" +
@@ -87,9 +79,8 @@ namespace ClassHuman
                 "Email: " + this._email + "\n" +
                 "Nation: " + this._nation.ToString() + "\n" +
                 "Adress: " + this._adress.toString();
-            return str;
-        }
-        public virtual  void inputInfo(/*listHuman list*/)
+        
+        public void inputInfo(listHuman list)
         {
             Console.WriteLine("Name: ");
             string name = Console.ReadLine();
@@ -106,63 +97,62 @@ namespace ClassHuman
             Console.WriteLine("Email: ");
             string email = Console.ReadLine();
             Console.WriteLine("Nation: ");
-            //Nation nation = (Nation)Enum.Parse(typeof(Nation), Console.ReadLine(), true);
             Nation nation = (Nation)Enum.Parse(typeof(Nation), Console.ReadLine(), true);
             Adress adr = new Adress();
-            //Human n = new Human(name, surname, age, height, weight, habbits,email, nation, adr.inputadress());
-            //list.add(n);
+            Human n = new Human(name, surname, age, height, weight, habbits,email, nation, adr.inputadress());
+            list.add(n);
         }
         
-public string Name
+        public string Name
         {
-            get { return _name; }
-            set { _name = value; }
+            get => _name;
+            set => _name = value;
         }
 
         public string Surname
         {
-            get { return _surname; }
-            set { _surname = value; }
+            get => _surname;
+            set => _surname = value;
         }
 
         public int Age
         {
-            get { return _age; }
-            set { _age = value; }
+            get => _age;
+            set => _age = value;
         }
 
         public double Height
         {
-            get { return _height; }
-            set { _height = value; }
+            get => _height;
+            set => _height = value;
         }
 
         public double Weight
         {
-            get { return _weight; }
-            set { _weight = value; }
+            get => _weight;
+            set => _weight = value;
         }
 
         public bool Habbits
         {
-            get { return _habbits; }
-            set { _habbits = value; }
+            get => _habbits;
+            set => _habbits = value;
         }
         public string Email
         {
-            get { return _email; }
-            set { _email = value; }
+            get => _email;
+            set => _email = value;
         }
         public Nation Nation
         {
-            get { return _nation; }
-            set { _nation = value; }
+            get => _nation;
+            set => _nation = value;
         }
 
         public Adress Adress
         {
-            get { return _adress; }
-            set { _adress = value; }
+            get => _adress;
+            set => _adress = value;
         }
     }
 }

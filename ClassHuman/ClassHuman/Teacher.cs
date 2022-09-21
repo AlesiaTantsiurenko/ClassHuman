@@ -7,13 +7,20 @@ using System.Xml;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using System.IO;
+using System.Runtime.Serialization;
 using Newtonsoft.Json;
 using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Soap;
+
 
 namespace ClassHuman
 {
-   public enum KeyWords {csharp, python, java, JS}
-   public  class Teacher : Human
+    
+    public enum KeyWords {csharp, python, java, JS}
+
+   [Serializable]
+   public class Teacher : Human
     {
         private int salary;
         private string department;
@@ -52,7 +59,7 @@ namespace ClassHuman
         public override void printInfo() 
         {
             string data =
-               base.toStr() + "\n" +
+                toStr() + "\n" +
                "Salary: " + this.salary.ToString() + "\n" +
                "Money: " + this.department + "\n" +
                 "Number of set: " + this.numofseats.ToString() + "\n" +
@@ -60,6 +67,71 @@ namespace ClassHuman
             Console.WriteLine(data);
 
         }
+        public void Ser()
+        {
+            SoapFormatter formatter = new SoapFormatter();
+
+            // создаем поток (soap файл)
+            FileStream fs = new FileStream("Student.soap", FileMode.OpenOrCreate);
+            try
+            {
+              
+                foreach (Student obj in list)
+                    formatter.Serialize(fs, obj);
+                Console.WriteLine("Запись в soap файл прошла успешно😉!");
+            }
+            catch (SerializationException e)
+            {
+                Console.WriteLine("Failed to serialize. Reason: " + e.Message);
+                throw;
+            }
+            finally
+            {
+                fs.Close();
+            }
+
+        }
+        public void Des()
+        {
+            string path = "Student.soap";
+            if (File.Exists(path))
+            {
+                //SoapFormatter formatter = new SoapFormatter();
+                FileStream fs = new FileStream(path, FileMode.OpenOrCreate);
+                List<Student> liststudent = new List<Student>();
+                try
+                {
+
+                    /*while (fs.Position < fs.Length)
+                     {
+                         liststudent.Add((Student)formatter.Deserialize(fs));
+
+                     }*/
+                    SoapFormatter formatter = new SoapFormatter();
+
+                    // Deserialize the hashtable from the file and
+                    // assign the reference to the local variable.
+                    for (int i = 0;i < list.Count(); i++){
+                        Student s = (Student)formatter.Deserialize(fs);
+                        liststudent.Add(s); 
+                    }
+
+                }
+                catch (SerializationException e)
+                {
+                    Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
+                    throw;
+                }
+                finally
+                {
+                    fs.Close();
+                }
+                for (int n = 0; n < liststudent.Count(); n++)
+                    liststudent[n].printInfo();
+            }
+            else Console.WriteLine($"Файла с именем {path} не существует!");
+        }
+
         public void SerializelistStudent()
         {
 
@@ -74,19 +146,26 @@ namespace ClassHuman
                 fs.Close();
 
                 list.Clear();
+                Console.WriteLine("Запись в txt файл прошла успешно😉!");
             }
         }
         public void DeserializelistStudent()
         {
-            using (FileStream fs = new FileStream("Student.txt",
-                    FileMode.Open, FileAccess.Read))
+            string path = "Student.txt";
+            if (File.Exists(path))
             {
-                XmlSerializer bf = new XmlSerializer(typeof(List<Student>)); // тип для сериализации List объектов FLY
-                list = bf.Deserialize(fs) as List<Student>;
-                foreach (Student obj in list)
-                    obj.printInfo();
-                fs.Close();
+                using (FileStream fs = new FileStream(path,
+                        FileMode.Open, FileAccess.Read))
+                {
+                    XmlSerializer bf = new XmlSerializer(typeof(List<Student>)); // тип для сериализации List объектов FLY
+                    list = bf.Deserialize(fs) as List<Student>;
+                    foreach (Student obj in list)
+                        obj.printInfo();
+                    fs.Close();
+                }
             }
+            else Console.WriteLine($"Файла с именем {path} не существует!");
+
         }
         public void write_to_json()
         {
@@ -96,75 +175,73 @@ namespace ClassHuman
             for (int i = 0; i < list.Count(); i++)
                 File.AppendAllText("Student.json", JsonConvert.SerializeObject(list[i],
               new JsonSerializerSettings { StringEscapeHandling = StringEscapeHandling.EscapeNonAscii }));
-
+            Console.WriteLine("Запись в json файл прошла успешно😉!");
         }
         public void read_from_file()
         {
-            list.Clear();
-            JsonTextReader reader = new JsonTextReader(new StreamReader("Student.json"));
-            reader.SupportMultipleContent = true;
-            while (true)
+            string path = "Student.json";
+            if (File.Exists(path))
             {
-                if (!reader.Read())
+                list.Clear();
+                JsonTextReader reader = new JsonTextReader(new StreamReader(path));
+                reader.SupportMultipleContent = true;
+                while (true)
                 {
-                    break;
-                }
-                JsonSerializer serializer = new JsonSerializer();
-                Student l = serializer.Deserialize<Student>(reader);
+                    if (!reader.Read())
+                    {
+                        break;
+                    }
+                    JsonSerializer serializer = new JsonSerializer();
+                    Student l = serializer.Deserialize<Student>(reader);
 
-                list.Add(l);
+                    list.Add(l);
+                }
+                foreach (Student obj in list)
+                    obj.printInfo();
+                reader.Close();
             }
+            else Console.WriteLine($"Файла с именем {path} не существует!");
 
         }
-        
+       
         public void findName(string str)
         {
-            for (int n = 0; n < list.Count(); n++)
-            {
-                if (list[n].Name == str)
-                    list[n].printInfo();
-                else
-                    Console.WriteLine("Объекта с такими инициалами нету в списке!");
-            }
+           
+            if (list.Exists(obg => obg.Name == str)) list.Find(obg => obg.Name == str).printInfo();
+            else Console.WriteLine($"Объекта с именем {str} не существует в списке.");
 
         }
         public void find_change_name(string fName, string lName)
         {
-            for (int n = 0; n < list.Count(); n++)
+            if (list.Exists(obg => obg.Name == fName))
             {
-                if (list[n].Name == fName)
-                {
-                    list[n].Name = lName;
-                    list[n].printInfo();
-                }
+                var st = list.Find(obg => obg.Name == fName);
+                st.Name = lName;
+                st.printInfo();
             }
+            else Console.WriteLine($"Объекта с именем {fName} не существует в списке.");
 
         }
         public void find_change_surname(string fSurname, string lSurname)
         {
-            for (int n = 0; n < list.Count(); n++)
+            if(list.Exists(obg => obg.Surname == fSurname))
             {
-                if (list[n].Surname == fSurname)
-                {
-                    list[n].Surname = lSurname;
-                    list[n].printInfo();
-                }
-                else
-                    Console.WriteLine("Объекта с такими инициалами нету в списке!");
+                var st = list.Find(obg => obg.Surname == fSurname);
+                st.Surname = Surname;
+                st.printInfo();
             }
+            else Console.WriteLine($"Объекта с именем {fSurname} не существует в списке.");
+        
         }
         public void find_change_age(string name, string surname, int age)
         {
-            for (int n = 0; n < list.Count(); n++)
+            if(list.Exists(obg => (obg.Name == name)&&(obg.Surname == surname)))
             {
-                if ((list[n].Name == name) && (list[n].Surname == surname))
-                {
-                    list[n].Age = age;
-                    list[n].printInfo();
-                }
-                else
-                    Console.WriteLine("Объекта с такими инициалами нету в списке!");
+                var st = list.Find(obg => (obg.Name == name) && (obg.Surname == surname));
+                st.Age = age;
+                st.printInfo();
             }
+            else Console.WriteLine($"Объекта с именем {name} и фамилией {surname} не существует в списке.");
         }
         public bool check_numofset(string key)
         {
@@ -180,12 +257,13 @@ namespace ClassHuman
 
         public void remove(string name, string surname)
         {
-            for (int n = 0; n < list.Count(); n++)
+            if (list.Exists(obg => (obg.Name == name) && (obg.Surname == surname)))
             {
-                if ((list[n].Name == name) && (list[n].Surname == surname))
-                    list.RemoveAt(n);
+                var st = list.Find(obg => (obg.Name == name) && (obg.Surname == surname));
+                list.Remove(st);
+                Console.WriteLine("Удаление прошло успешно!");
             }
-            Console.WriteLine("Удаление прошло успешно!");
+            else Console.WriteLine($"Объекта с именем {name} и фамилией {surname} не существует в списке.");
         }
 
         public void sort_surname()
@@ -220,36 +298,7 @@ namespace ClassHuman
         }
         public bool IsValidEmail(string email)
         {
-            if (string.IsNullOrWhiteSpace(email))
-                return false;
-
-           /* try
-            {
-                // Normalize the domain
-                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
-                                      RegexOptions.None, TimeSpan.FromMilliseconds(200));
-
-                // Examines the domain part of the email and normalizes it.
-                string DomainMapper(Match match)
-                {
-                    // Use IdnMapping class to convert Unicode domain names.
-                    var idn = new IdnMapping();
-
-                    // Pull out and process domain name (throws ArgumentException on invalid)
-                    string domainName = idn.GetAscii(match.Groups[2].Value);
-
-                    return match.Groups[1].Value + domainName;
-                }
-            }
-            catch (RegexMatchTimeoutException e)
-            {
-                return false;
-            }
-            catch (ArgumentException e)
-            {
-                return false;
-            }
-           */
+            IsNotEmpty(email);
             try
             {
                 return Regex.IsMatch(email,
@@ -261,14 +310,59 @@ namespace ClassHuman
                 return false;
             }
         }
-        public override void inputInfo()
+        public bool IsNotEmpty(string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return false;
+            else return true;
+        }
+        public bool IsValidNumber(int number)
+        {
+            if (number > 0) return true;
+            else return false;
+
+        }
+        public bool IsValidNumber_d(double number)
+        {
+            if (number > 0) return true;
+            else return false;
+
+        }
+        public bool IsValidHabbits(string habbit)
+        {
+            string[] array = { "true", "false"};
+            if (array.Contains(habbit)) return true;
+            else return false;
+        }
+        public bool IsValidNation(string str)
+        {
+            List<string> termsList = new List<string>();
+            foreach (string s in Enum.GetNames(typeof(Nation)))
+            {
+                termsList.Add(s);
+            }
+            if (termsList.Contains(str)) return true;
+            else return false;
+        }
+        public bool IsValidKey(string str)
+        {
+            List<string> termsList = new List<string>();
+            foreach (string s in Enum.GetNames(typeof(Key)))
+            {
+                termsList.Add(s);
+            }
+            if (termsList.Contains(str)) return true;
+            else return false;
+        }
+
+        public  void inputInfo()
         {
             string name;
             while (true)
             {
                 Console.WriteLine("Name: ");
                 name = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(name)) break;
+                if (IsNotEmpty(name)) break;
                 else Console.WriteLine("Вы не ввели имя!");
 
             }
@@ -277,68 +371,54 @@ namespace ClassHuman
             {
                 Console.WriteLine("Surname: ");
                 surname = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(surname)) break;
+                if (IsNotEmpty(surname)) break;
                 else Console.WriteLine("Вы не ввели фамилию!");
 
             }
             int age;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Age: ");
-                    age = int.Parse(Console.ReadLine());
-                    if (age > 0) break;
-                    else Console.WriteLine("Возраст не может быть отридцательныи!");
-                }
-                catch
-                {
-                    Console.WriteLine("Вы не ввели возраст!");
-                }
+                    string a = Console.ReadLine();
+                if (IsNotEmpty(a) && IsValidNumber(int.Parse(a))){
+                    age = int.Parse(a);
+                    break; }
+                else Console.WriteLine("Возраст не может быть отридцательным или пустым!");
+                
             }
             double height;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Height: ");
-                    height = double.Parse(Console.ReadLine());
-                    if (height > 0) break;
-                    else Console.WriteLine("Рост не может быть отридцательныи!");
-                }
-                catch
-                {
-                    Console.WriteLine("Вы не ввели рост!");
-                }
+                    string h = Console.ReadLine();
+                    if (IsNotEmpty(h) && IsValidNumber_d(double.Parse(h))){
+                        height = double.Parse(h);
+                        break; }
+                    else Console.WriteLine("Рост не может быть отридцательныи или пустым!");
+               
             }
             double weight;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Weight: ");
-                    weight = double.Parse(Console.ReadLine());
-                    if (weight > 0) break;
-                    else Console.WriteLine("Вес не может быть отридцательныи!");
-                }
-                catch
-                {
-                    Console.WriteLine("Вы не ввели вес!");
-                }
+                    string w = Console.ReadLine();
+                    if (IsNotEmpty(w) && IsValidNumber_d(double.Parse(w))){
+                        weight = double.Parse(w);
+                        break; }
+                    else Console.WriteLine("Вес не может быть отридцательныи или пустым!");
             }
             bool habbits;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Habbits: ");
-                    habbits = bool.Parse(Console.ReadLine());
-                    break;
-                }
-                catch
-                {
-                    Console.WriteLine("Вы не ввели привычку либо введенное значение не соответствет нужному типу!");
-                }
+                    string hab = Console.ReadLine();
+                    if (IsNotEmpty(hab) && IsValidHabbits(hab))
+                    {
+                        habbits = bool.Parse(hab);
+                        break;
+                    }
+                    else Console.WriteLine("Вы не ввели привычку либо введенное значение не соответствет нужному типу!");
+                
             }
             string email;
             while (true)
@@ -351,62 +431,52 @@ namespace ClassHuman
             Nation nation;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Nation: ");
                     //Nation nation = (Nation)Enum.Parse(typeof(Nation), Console.ReadLine(), true);
-                    nation = (Nation)Enum.Parse(typeof(Nation), Console.ReadLine(), true);
-                    break;
-                }
-                catch
-                {
-                    Console.WriteLine("Введенной нации либо нету в списке либо ви ничего не ввели!");
-                }
+                    string nat = Console.ReadLine();
+                    if (IsNotEmpty(nat) && IsValidNation(nat))
+                    {
+                        nation = (Nation)Enum.Parse(typeof(Nation), nat, true);
+                        break;
+                    }
+                    else Console.WriteLine("Введенной нации либо нету в списке либо ви ничего не ввели!"); 
             }
             Adress adr = new Adress();
             int group;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Group: ");
-                    group = int.Parse(Console.ReadLine());
-                    if(group>0) break;
-                    else Console.WriteLine("Номер группы не может быть отридцательным!");
-                }
-                catch
+                    string gr = Console.ReadLine();
+                if (IsNotEmpty(gr) && IsValidNumber(int.Parse(gr)))
                 {
-                    Console.WriteLine("Вы не ввели номер группы!");
+                    group = int.Parse(gr);
+                    break;
                 }
+                else Console.WriteLine("Номер группы не может быть отридцательным или пустым!");
             }
             int money;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Money: ");
-                    money = int.Parse(Console.ReadLine());
-                    if (money > 0) break;
-                    else Console.WriteLine("Размер стипендии не может быть отридцательным!");
-                }
-                catch
-                {
-                    Console.WriteLine("Вы не ввели размер стипендии!");
-                }
+                    string m = Console.ReadLine();
+                    if (IsNotEmpty(m) && IsValidNumber(int.Parse(m)))
+                    {
+                        money = int.Parse(m);
+                        break;
+                    }
+                else Console.WriteLine("Размер стипендии не может быть отридцательным или пустым!");
             }
             Key key;
             while (true)
             {
-                try
-                {
                     Console.WriteLine("Keywords: ");
-                    key = (Key)Enum.Parse(typeof(Key), Console.ReadLine(), true);
-                    break;
-                }
-                catch
-                {
-                    Console.WriteLine("Введенного языка либо нету в списке либо ви ничего не ввели!");
-                }
+                    string ky = Console.ReadLine();
+                    if (IsNotEmpty(ky) && IsValidKey(ky))
+                    {
+                        key = (Key)Enum.Parse(typeof(Key), ky, true);
+                        break;
+                    }
+                else Console.WriteLine("Введенного языка либо нету в списке либо ви ничего не ввели!");
             }
             Student n = new Student(name, surname, age, height, weight, habbits, email, nation, adr.inputadress(), group, money, key);
             
@@ -414,28 +484,28 @@ namespace ClassHuman
         }
         public int Salary
         {
-            get { return salary; }
-            set { salary = value; }
+            get => salary;
+            set => salary = value;
         }
         public string Department
         {
-            get { return department; }
-            set { department = value; }
+            get => department;
+            set => department = value;
         }
         public int NumOfSeats
         {
-            get { return numofseats;}
-            set { numofseats = value; }
+            get => numofseats;
+            set => numofseats = value;
         }
         public KeyWords KeyWords
         {
-            get { return keywords; }
-            set { keywords = value; }
+            get => keywords;
+            set => keywords = value;
         }
         public List<Student> List
         {
-            get { return list; }
-            set { list = value; }
+            get => list;
+            set => list = value;
         }
     }
 }

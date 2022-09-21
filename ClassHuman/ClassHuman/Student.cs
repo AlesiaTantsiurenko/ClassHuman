@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 namespace ClassHuman
 {
     public enum Key { csharp, python, java, JS }
-    public class Student : Human
+     [Serializable]
+     public class Student : Human
     {
         private int group;
         private int money;
@@ -39,18 +40,18 @@ namespace ClassHuman
        
         public int Group
         {
-            get { return group; }
-            set { group = value; }
+            get => group;
+            set => group = value;
         }
         public int Money
         {
-            get { return money; }
-            set { money = value; }
+            get => money;
+            set => money = value;
         }
         public Key Key
         {
-            get { return key; }
-            set { key = value; }
+            get => key;
+            set => key = value;
 
         }
     }
